@@ -1,4 +1,4 @@
-import React, { ComponentType } from "react"
+import React, { ComponentType, useState } from "react"
 import {
   Pressable,
   PressableProps,
@@ -8,6 +8,7 @@ import {
   ViewStyle,
 } from "react-native"
 import { colors, spacing, typography } from "../theme"
+import { Icon } from "./Icon"
 import { Text, TextProps } from "./Text"
 
 type Presets = keyof typeof $viewPresets
@@ -18,6 +19,7 @@ export interface ButtonAccessoryProps {
 }
 
 export interface ButtonProps extends PressableProps {
+  icon?: TextProps["icon"]
   /**
    * Text which is looked up via i18n.
    */
@@ -85,6 +87,7 @@ export function Button(props: ButtonProps) {
     children,
     RightAccessory,
     LeftAccessory,
+    icon,
     ...rest
   } = props
 
@@ -108,12 +111,11 @@ export function Button(props: ButtonProps) {
     <Pressable style={$viewStyle} accessibilityRole="button" {...rest}>
       {(state) => (
         <>
+          {icon ? <Icon icon={icon} /> : null}
           {!!LeftAccessory && <LeftAccessory style={$leftAccessoryStyle} pressableState={state} />}
-
           <Text tx={tx} text={text} txOptions={txOptions} style={$textStyle(state)}>
             {children}
           </Text>
-
           {!!RightAccessory && (
             <RightAccessory style={$rightAccessoryStyle} pressableState={state} />
           )}
@@ -151,34 +153,47 @@ const $viewPresets = {
   default: [
     $baseViewStyle,
     {
-      borderWidth: 1,
-      borderColor: colors.palette.neutral400,
-      backgroundColor: colors.palette.neutral100,
+      borderRadius: 25,
+      backgroundColor: colors.palette.neutral200,
+      shadowColor: "#000",
+      shadowOffset: {
+        width: 0,
+        height: 1,
+      },
+      shadowOpacity: 0.22,
+      shadowRadius: 2.22,
+      elevation: 3,
     },
   ] as StyleProp<ViewStyle>,
 
-  filled: [$baseViewStyle, { backgroundColor: colors.palette.neutral300 }] as StyleProp<ViewStyle>,
-
-  reversed: [
+  primary: [
     $baseViewStyle,
-    { backgroundColor: colors.palette.neutral800 },
+    {
+      borderRadius: 25,
+      shadowColor: "#000",
+      shadowOffset: {
+        width: 0,
+        height: 1,
+      },
+      shadowOpacity: 0.22,
+      shadowRadius: 2.22,
+      elevation: 3,
+      backgroundColor: colors.palette.primary500,
+    },
   ] as StyleProp<ViewStyle>,
 }
 
 const $textPresets: Record<Presets, StyleProp<TextStyle>> = {
   default: $baseTextStyle,
-  filled: $baseTextStyle,
-  reversed: [$baseTextStyle, { color: colors.palette.neutral100 }],
+  primary: $baseTextStyle,
 }
 
 const $pressedViewPresets: Record<Presets, StyleProp<ViewStyle>> = {
   default: { backgroundColor: colors.palette.neutral200 },
-  filled: { backgroundColor: colors.palette.neutral400 },
-  reversed: { backgroundColor: colors.palette.neutral700 },
+  primary: { backgroundColor: colors.palette.primary600 },
 }
 
 const $pressedTextPresets: Record<Presets, StyleProp<TextStyle>> = {
   default: { opacity: 0.9 },
-  filled: { opacity: 0.9 },
-  reversed: { opacity: 0.9 },
+  primary: { opacity: 0.8 },
 }

@@ -128,45 +128,63 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeSc
 
   if (!showHomePage) {
     return (
-      <AppIntroSlider
-        style={
-          {
-            // backgroundColor: COLORS.white
-          }
-        }
-        data={screens}
-        renderItem={({ item }) => {
-          return (
-            <View style={{ width: "100%", justifyContent: "center", alignItems: "center" }}>
-              <Image
-                key={1}
-                source={item.image}
-                style={{ width: WIDTH - 80, height: 400 }}
-                resizeMode={"contain"}
-              />
-              <View>
-                <Text style={item.titleSet}>{item.title}</Text>
+      <SafeAreaView style={{ backgroundColor: "#fff" }}>
+        <View
+          style={{
+            flexDirection: "column",
+            padding: 10,
+          }}
+        >
+          <Button preset="primary" text="Next Page" />
+        </View>
+        <View
+          style={{
+            flexDirection: "column",
+            padding: 10,
+          }}
+        >
+          <Button icon="check" text="Next Page" />
+        </View>
+      </SafeAreaView>
+      // <AppIntroSlider
+      //   style={
+      //     {
+      //       // backgroundColor: COLORS.white
+      //     }
+      //   }
+      //   data={screens}
+      //   renderItem={({ item }) => {
+      //     return (
+      //       <View style={{ width: "100%", justifyContent: "center", alignItems: "center" }}>
+      //         <Image
+      //           key={1}
+      //           source={item.image}
+      //           style={{ width: WIDTH - 80, height: 400 }}
+      //           resizeMode={"contain"}
+      //         />
+      //         <View>
+      //           <Text style={item.titleSet}>{item.title}</Text>
 
-                <Text style={item.subTitleSet}>{item.subTitle}</Text>
-              </View>
-            </View>
-          )
-        }}
-        bottomButton
-        showSkipButton
-        activeDotStyle={{
-          // backgroundColor: COLORS.yellow,
-          width: 30,
-        }}
-        renderDoneButton={() => <Button text="Next +" />}
-        renderNextButton={() => <Button text="Next" />}
-        renderSkipButton={() => <Button isActive={true} text="Next -" />}
-        // renderDoneButton={() => buttonLabel("Let’s start")}
-        // renderSkipButton={() => skipButton("Already have Account?")}
+      //           <Text style={item.subTitleSet}>{item.subTitle}</Text>
+      //         </View>
+      //       </View>
+      //     )
+      //   }}
+      //   bottomButton
+      //   showSkipButton
+      //   activeDotStyle={{
+      //     // backgroundColor: COLORS.yellow,
+      //     width: 30,
+      //   }}
+      //   renderDoneButton={() => <Button text="Next +" />}
+      //   renderNextButton={() => <Button text="Next" />}
+      //   renderSkipButton={() => <Button isActive={true} text="Next -" />}
+      //   // renderDoneButton={() => buttonLabel("Let’s start")}
+      //   // renderSkipButton={() => skipButton("Already have Account?")}
 
-        // onDone={() => navigation.navigate('RegistrationScreen')}
-        // onSkip={() => navigation.navigate('HomeScreen')}
-      />
+      //   // onDone={() => navigation.navigate('RegistrationScreen')}
+      //   // onSkip={() => navigation.navigate('HomeScreen')}
+      // />
     )
   }
 })

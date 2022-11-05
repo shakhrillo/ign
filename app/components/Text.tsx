@@ -3,12 +3,14 @@ import React from "react"
 import { StyleProp, Text as RNText, TextProps as RNTextProps, TextStyle } from "react-native"
 import { isRTL, translate, TxKeyPath } from "../i18n"
 import { colors, typography } from "../theme"
+import { IconTypes } from "./Icon"
 
 type Sizes = keyof typeof $sizeStyles
 type Weights = keyof typeof typography.primary
 type Presets = keyof typeof $presets
 
 export interface TextProps extends RNTextProps {
+  icon?: IconTypes
   /**
    * Text which is looked up via i18n.
    */
