@@ -1,10 +1,11 @@
 import { observer } from "mobx-react-lite"
 import React, { FC, useEffect, useMemo, useRef, useState } from "react"
-import { TextInput, TextStyle, ViewStyle } from "react-native"
+import { TextInput, TextStyle, View, ViewStyle } from "react-native"
 import { useStores } from "../../models"
-import { Button, Icon, Screen, Text, TextField, TextFieldAccessoryProps } from "../../components"
+import { Button, Icon, Screen, Text, TextField, TextFieldAccessoryProps, Toggle } from "../../components"
 import { AppStackScreenProps } from "../../navigators"
 import { colors, spacing } from "../../theme"
+import { SafeAreaView } from "react-native-safe-area-context"
 
 interface LoginScreenProps extends AppStackScreenProps<"Login"> {}
 
@@ -13,6 +14,7 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
   const [isAuthPasswordHidden, setIsAuthPasswordHidden] = useState(true)
   const [isSubmitted, setIsSubmitted] = useState(false)
   const [attemptsCount, setAttemptsCount] = useState(0)
+  const [rememberCheck, setRememberCheck] = useState(true)
   const {
     authenticationStore: {
       authEmail,
@@ -54,8 +56,8 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
       function PasswordRightAccessory(props: TextFieldAccessoryProps) {
         return (
           <Icon
-            icon={isAuthPasswordHidden ? "view" : "hidden"}
-            color={colors.palette.neutral800}
+            icon={'eye'}
+            color={isAuthPasswordHidden ? colors.palette.primary600 : colors.palette.neutral800}
             containerStyle={props.style}
             onPress={() => setIsAuthPasswordHidden(!isAuthPasswordHidden)}
           />
@@ -72,13 +74,8 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
   }, [])
 
   return (
-    <Screen
-      preset="auto"
-      contentContainerStyle={$screenContentContainer}
-      safeAreaEdges={["top", "bottom"]}
-    >
+    <SafeAreaView style={$screenContentContainer}>
       <Text testID="login-heading" tx="loginScreen.signIn" preset="heading" style={$signIn} />
-      <Text tx="loginScreen.enterDetails" preset="subheading" style={$enterDetails} />
       {attemptsCount > 2 && <Text tx="loginScreen.hint" size="sm" weight="light" style={$hint} />}
 
       <TextField
@@ -89,11 +86,12 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
         autoComplete="email"
         autoCorrect={false}
         keyboardType="email-address"
-        labelTx="loginScreen.emailFieldLabel"
+        // labelTx="loginScreen.emailFieldLabel"
         placeholderTx="loginScreen.emailFieldPlaceholder"
         helper={errors?.authEmail}
         status={errors?.authEmail ? "error" : undefined}
         onSubmitEditing={() => authPasswordInput.current?.focus()}
+        LeftAccessory={() => <Icon color={colors.palette.primary600} icon="sms" />}
       />
 
       <TextField
@@ -105,32 +103,54 @@ export const LoginScreen: FC<LoginScreenProps> = observer(function LoginScreen(_
         autoComplete="password"
         autoCorrect={false}
         secureTextEntry={isAuthPasswordHidden}
-        labelTx="loginScreen.passwordFieldLabel"
+        // labelTx="loginScreen.passwordFieldLabel"
         placeholderTx="loginScreen.passwordFieldPlaceholder"
         helper={errors?.authPassword}
         status={errors?.authPassword ? "error" : undefined}
         onSubmitEditing={login}
         RightAccessory={PasswordRightAccessory}
+        LeftAccessory={() => <Icon color={colors.palette.primary600} icon="lock" />}
       />
+
+        <Toggle
+          containerStyle={$checkbox}
+          value={rememberCheck}
+          label={"Remember me"}
+          variant="checkbox"
+          onValueChange={() => setRememberCheck(!rememberCheck)}
+        />
 
       <Button
         testID="login-button"
-        tx="loginScreen.tapToSignIn"
+        tx="loginScreen.signIn"
         style={$tapButton}
-        preset="reversed"
+        preset="primary"
         onPress={login}
       />
-    </Screen>
+
+      <Text style={$forgotText} size={"xs"} tx="loginScreen.forgotPass" />
+      <Text textWithLine={true} tx="loginScreen.orContWith" />
+      <View style={$loginWithBtn}>
+        <Button preset='withIcon' icon="google" />
+        <Button preset='withIcon' icon="facebook" />
+        <Button preset='withIcon' icon="sms" />
+      </View>
+    </SafeAreaView>
   )
 })
 
 const $screenContentContainer: ViewStyle = {
+  height: '100%',
+  backgroundColor: colors.palette.neutral100,
   paddingVertical: spacing.huge,
   paddingHorizontal: spacing.large,
+  justifyContent: 'flex-end'
 }
 
 const $signIn: TextStyle = {
-  marginBottom: spacing.small,
+  marginTop: 'auto',
+  marginBottom: 'auto',
+  textAlign: 'center',
 }
 
 const $enterDetails: TextStyle = {
@@ -150,4 +170,19 @@ const $tapButton: ViewStyle = {
   marginTop: spacing.extraSmall,
 }
 
+const $checkbox: ViewStyle = {
+  marginBottom: 10
+}
+
+const $forgotText: TextStyle = {
+  marginVertical: spacing.small,
+  textAlign: 'center',
+  color: colors.palette.primary600
+}
+
+const $loginWithBtn: ViewStyle = {
+  marginTop: spacing.medium,
+  flexDirection: 'row',
+  justifyContent: 'space-around'
+}
 // @demo remove-file

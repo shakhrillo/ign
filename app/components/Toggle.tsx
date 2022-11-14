@@ -14,12 +14,15 @@ import {
 } from "react-native"
 import Animated, { FadeIn, useAnimatedStyle, withTiming } from "react-native-reanimated"
 import { colors, spacing } from "../theme"
-import { iconRegistry } from "./Icon"
+import { Icon, iconRegistry, IconTypes } from "./Icon"
 import { Text, TextProps } from "./Text"
 
-type Variants = "checkbox" | "switch" | "radio"
+type Variants = "checkbox" | "switch" | "radio" | "checkboxWithText"
 
 export interface ToggleProps extends Omit<TouchableOpacityProps, "style"> {
+  icon?: IconTypes
+  text?: TextProps["text"]
+  centerItem?: object
   /**
    * The variant of the toggle.
    * Options: "checkbox", "switch", "radio"
@@ -114,15 +117,18 @@ export interface ToggleProps extends Omit<TouchableOpacityProps, "style"> {
    * Special prop for the switch variant that adds a text/icon label for on/off states.
    */
   switchAccessibilityMode?: "text" | "icon"
+
 }
 
 interface ToggleInputProps {
-  on: boolean
-  status: ToggleProps["status"]
-  disabled: boolean
-  outerStyle: ViewStyle
-  innerStyle: ViewStyle
-  detailStyle: ViewStyle & ImageStyle
+  icon?: IconTypes
+  text?: string
+  on?: boolean
+  status?: ToggleProps["status"]
+  disabled?: boolean
+  outerStyle?: ViewStyle
+  innerStyle?: ViewStyle
+  detailStyle?: ViewStyle & ImageStyle
   switchAccessibilityMode?: ToggleProps["switchAccessibilityMode"]
 }
 
@@ -137,6 +143,8 @@ export function Toggle(props: ToggleProps) {
     variant = "checkbox",
     editable = true,
     status,
+    text,
+    icon,
     value,
     onPress,
     onValueChange,
@@ -165,8 +173,9 @@ export function Toggle(props: ToggleProps) {
     status === "error" && { color: colors.error },
     HelperTextProps?.style,
   ]
-
+  const [change, setChange] = useState(false)
   function handlePress(e: GestureResponderEvent) {
+    setChange(!change)
     if (disabled) return
     onValueChange?.(!value)
     onPress?.(e)
@@ -185,7 +194,9 @@ export function Toggle(props: ToggleProps) {
         {labelPosition === "left" && <FieldLabel {...props} labelPosition={labelPosition} />}
 
         <ToggleInput
-          on={value}
+          icon={icon}
+          text={text}
+          on={change}
           disabled={disabled}
           status={status}
           outerStyle={props.inputOuterStyle}
@@ -196,7 +207,7 @@ export function Toggle(props: ToggleProps) {
 
         {labelPosition === "right" && <FieldLabel {...props} labelPosition={labelPosition} />}
       </View>
-
+      
       {!!(helper || helperTx) && (
         <Text
           preset="formHelper"
@@ -215,6 +226,42 @@ const ToggleInputs: Record<Variants, FC<ToggleInputProps>> = {
   checkbox: Checkbox,
   switch: Switch,
   radio: Radio,
+  checkboxWithText: CheckboxWithText
+}
+function CheckboxWithText(props: ToggleInputProps) {
+  const {
+    icon,
+    on,
+    text,
+    status,
+    disabled,
+    outerStyle: $outerStyleOverride,
+  } = props;
+
+  const offBackgroundColor = [
+    disabled && colors.palette.neutral100,
+    status === "error" && colors.errorBackground,
+    colors.palette.lightSecondary100,
+  ].filter(Boolean)[0]
+
+  const outerBorderColor = [
+    disabled && colors.palette.neutral100,
+    status === "error" && colors.error,
+    !on && colors.palette.neutral100,
+    colors.palette.lightSecondary200,
+  ].filter(Boolean)[0]
+  return (
+    <View
+      style={[
+        $inputOuterVariants.checkboxWithText,
+        { backgroundColor: offBackgroundColor, borderColor: outerBorderColor },
+        $outerStyleOverride, 
+      ]}
+    >
+      <Icon icon={icon} />
+      {text ? <Text text={text} /> : null}
+    </View>
+  )
 }
 
 function Checkbox(props: ToggleInputProps) {
@@ -225,31 +272,32 @@ function Checkbox(props: ToggleInputProps) {
     outerStyle: $outerStyleOverride,
     innerStyle: $innerStyleOverride,
     detailStyle: $detailStyleOverride,
-  } = props
+  } = props;
+
 
   const offBackgroundColor = [
     disabled && colors.palette.neutral400,
     status === "error" && colors.errorBackground,
-    colors.palette.neutral200,
+    colors.palette.neutral100,
   ].filter(Boolean)[0]
 
   const outerBorderColor = [
     disabled && colors.palette.neutral400,
     status === "error" && colors.error,
-    !on && colors.palette.neutral800,
-    colors.palette.secondary500,
+    !on && colors.palette.neutral400,
+    colors.palette.primary500,
   ].filter(Boolean)[0]
 
   const onBackgroundColor = [
     disabled && colors.transparent,
     status === "error" && colors.errorBackground,
-    colors.palette.secondary500,
+    colors.palette.primary400,
   ].filter(Boolean)[0]
 
   const iconTintColor = [
     disabled && colors.palette.neutral600,
     status === "error" && colors.error,
-    colors.palette.accent100,
+    colors.palette.accent500,
   ].filter(Boolean)[0]
 
   return (
@@ -270,7 +318,7 @@ function Checkbox(props: ToggleInputProps) {
       >
         <Image
           source={iconRegistry.check}
-          style={[$checkboxDetail, { tintColor: iconTintColor }, $detailStyleOverride]}
+        // style={[$checkboxDetail, { tintColor: iconTintColor }, $detailStyleOverride]}
         />
       </Animated.View>
     </View>
@@ -290,27 +338,26 @@ function Radio(props: ToggleInputProps) {
   const offBackgroundColor = [
     disabled && colors.palette.neutral400,
     status === "error" && colors.errorBackground,
-    colors.palette.neutral200,
+    colors.palette.neutral100,
   ].filter(Boolean)[0]
 
   const outerBorderColor = [
     disabled && colors.palette.neutral400,
     status === "error" && colors.error,
-    !on && colors.palette.neutral800,
-    colors.palette.secondary500,
+    !on && colors.palette.neutral400,
+    colors.palette.primary600,
   ].filter(Boolean)[0]
 
   const onBackgroundColor = [
     disabled && colors.transparent,
     status === "error" && colors.errorBackground,
-    colors.palette.neutral100,
   ].filter(Boolean)[0]
 
-  const dotBackgroundColor = [
-    disabled && colors.palette.neutral600,
-    status === "error" && colors.error,
-    colors.palette.secondary500,
-  ].filter(Boolean)[0]
+  // const dotBackgroundColor = [
+  //   disabled && colors.palette.neutral600,
+  //   status === "error" && colors.error,
+  //   colors.palette.secondary500,
+  // ].filter(Boolean)[0]
 
   return (
     <View
@@ -328,8 +375,9 @@ function Radio(props: ToggleInputProps) {
           useAnimatedStyle(() => ({ opacity: withTiming(on ? 1 : 0) }), [on]),
         ]}
       >
-        <View
-          style={[$radioDetail, { backgroundColor: dotBackgroundColor }, $detailStyleOverride]}
+        <Image
+          source={iconRegistry.radioCheck}
+        // style={[$checkboxDetail, { tintColor: iconTintColor }, $detailStyleOverride]}
         />
       </Animated.View>
     </View>
@@ -479,12 +527,12 @@ function SwitchAccessibilityLabel(props: ToggleInputProps & { role: "on" | "off"
         />
       )}
 
-      {switchAccessibilityMode === "icon" && shouldLabelBeVisible && (
-        <Image
-          style={[$switchAccessibilityIcon, { tintColor: color }]}
-          source={role === "off" ? iconRegistry.hidden : iconRegistry.view}
-        />
-      )}
+      {/* {switchAccessibilityMode === "icon" && shouldLabelBeVisible && (
+        // <Image
+        //   style={[$switchAccessibilityIcon, { tintColor: color }]}
+          // source={role === "off" ? iconRegistry.hidden : iconRegistry.view}
+        // />
+      )} */}
     </View>
   )
 }
@@ -544,6 +592,7 @@ const $inputOuterVariants: Record<Variants, StyleProp<ViewStyle>> = {
   checkbox: [$inputOuterBase, { borderRadius: 4 }],
   radio: [$inputOuterBase, { borderRadius: 12 }],
   switch: [$inputOuterBase, { height: 32, width: 56, borderRadius: 16, borderWidth: 0 }],
+  checkboxWithText: [$inputOuterBase, {width: '100%', justifyContent: 'center', borderRadius: 20, height: 35}]
 }
 
 const $checkboxInner: ViewStyle = {
@@ -551,13 +600,6 @@ const $checkboxInner: ViewStyle = {
   height: "100%",
   alignItems: "center",
   justifyContent: "center",
-  overflow: "hidden",
-}
-
-const $checkboxDetail: ImageStyle = {
-  width: 20,
-  height: 20,
-  resizeMode: "contain",
 }
 
 const $radioInner: ViewStyle = {
@@ -567,12 +609,7 @@ const $radioInner: ViewStyle = {
   justifyContent: "center",
   overflow: "hidden",
 }
-
-const $radioDetail: ViewStyle = {
-  width: 12,
-  height: 12,
-  borderRadius: 6,
-}
+  
 
 const $switchInner: ViewStyle = {
   width: "100%",
@@ -612,12 +649,6 @@ const $switchAccessibility: TextStyle = {
   width: "40%",
   justifyContent: "center",
   alignItems: "center",
-}
-
-const $switchAccessibilityIcon: ImageStyle = {
-  width: 14,
-  height: 14,
-  resizeMode: "contain",
 }
 
 const $switchAccessibilityLine: ViewStyle = {

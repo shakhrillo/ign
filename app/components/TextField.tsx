@@ -1,4 +1,4 @@
-import React, { ComponentType, forwardRef, Ref, useImperativeHandle, useRef } from "react"
+import React, { ComponentType, forwardRef, Ref, useImperativeHandle, useRef, useState } from "react"
 import {
   StyleProp,
   TextInput,
@@ -164,6 +164,14 @@ export const TextField = forwardRef(function TextField(props: TextFieldProps, re
     input.current?.focus()
   }
 
+  const [inputFocus, setInputFocus] = useState(false)
+
+  // function textInputFocus() {
+  //   console.log(inputFocus)
+  //   // $inputWrapperStyle.width = 1
+  //   // $inputWrapperStyle.borderBottomColor = colors.palette.primary600
+  // }
+
   useImperativeHandle(ref, () => input.current)
 
   return (
@@ -235,11 +243,10 @@ const $labelStyle: TextStyle = {
 
 const $inputWrapperStyle: ViewStyle = {
   flexDirection: "row",
-  alignItems: "flex-start",
-  borderWidth: 1,
-  borderRadius: 4,
-  backgroundColor: colors.palette.neutral200,
-  borderColor: colors.palette.neutral400,
+  alignItems: "center",
+  backgroundColor: colors.palette.neutral100,
+  borderBottomWidth: 1,
+  borderBottomColor: colors.palette.secondary300,
   overflow: "hidden",
 }
 
@@ -270,6 +277,9 @@ const $rightAccessoryStyle: ViewStyle = {
 const $leftAccessoryStyle: ViewStyle = {
   marginStart: spacing.extraSmall,
   height: 40,
+  backgroundColor: 'red',
+  borderColor: 'red',
+  borderWidth: 1,
   justifyContent: "center",
   alignItems: "center",
 }
