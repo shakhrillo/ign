@@ -1,6 +1,6 @@
 import i18n from "i18n-js"
 import React from "react"
-import { StyleProp, Text as RNText, TextProps as RNTextProps, TextStyle } from "react-native"
+import { StyleProp, Text as RNText, TextProps as RNTextProps, TextStyle, View, ViewStyle } from "react-native"
 import { isRTL, translate, TxKeyPath } from "../i18n"
 import { colors, typography } from "../theme"
 import { IconTypes } from "./Icon"
@@ -10,6 +10,8 @@ type Weights = keyof typeof typography.primary
 type Presets = keyof typeof $presets
 
 export interface TextProps extends RNTextProps {
+  link?: string
+  
   icon?: IconTypes
   /**
    * Text which is looked up via i18n.
@@ -44,6 +46,8 @@ export interface TextProps extends RNTextProps {
    * Children components.
    */
   children?: React.ReactNode
+
+  textWithLine?: boolean
 }
 
 /**
@@ -53,7 +57,7 @@ export interface TextProps extends RNTextProps {
  * - [Documentation and Examples](https://github.com/infinitered/ignite/blob/master/docs/Components-Text.md)
  */
 export function Text(props: TextProps) {
-  const { weight, size, tx, txOptions, text, children, style: $styleOverride, ...rest } = props
+  const { textWithLine = false, weight, size, tx, txOptions, text, children, link, style: $styleOverride, ...rest } = props
 
   const i18nText = tx && translate(tx, txOptions)
   const content = i18nText || text || children
@@ -66,15 +70,28 @@ export function Text(props: TextProps) {
     $sizeStyles[size],
     $styleOverride,
   ]
-
-  return (
-    <RNText {...rest} style={$styles}>
-      {content}
-    </RNText>
-  )
+    if(textWithLine) {
+      return (
+        <View style={$container}>
+          <View
+              style={$orText}
+          />
+          <RNText style={$loginTextWithLine}>
+              {content}
+          </RNText>
+      </View>
+      )
+    }else {
+      return (
+        <RNText {...rest} style={[$styles]}>
+          {content}
+        </RNText>
+      )
+    }
 }
 
 const $sizeStyles = {
+  xxxl: { fontSize: 52, lineHeight: 54 } as TextStyle,
   xxl: { fontSize: 36, lineHeight: 44 } as TextStyle,
   xl: { fontSize: 24, lineHeight: 34 } as TextStyle,
   lg: { fontSize: 20, lineHeight: 32 } as TextStyle,
@@ -93,6 +110,26 @@ const $baseStyle: StyleProp<TextStyle> = [
   $fontWeightStyles.normal,
   { color: colors.text },
 ]
+
+const $container: ViewStyle = {
+  alignItems: 'center',
+  justifyContent: 'center'
+}
+
+const $loginTextWithLine: TextStyle = {
+  marginVertical: 20,
+  paddingHorizontal: 16,
+  textTransform: 'uppercase',
+  backgroundColor: colors.palette.neutral100
+}
+
+const $orText: ViewStyle = {
+  position: 'absolute',
+  height: 1,
+  backgroundColor: colors.palette.neutral300,
+  width: '100%',
+  
+}
 
 const $presets = {
   default: $baseStyle,

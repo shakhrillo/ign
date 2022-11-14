@@ -1,21 +1,20 @@
-// import React, { useState } from "react"
-// import { Image, Dimensions, View, Text, SafeAreaView } from "react-native"
-import AppIntroSlider from "react-native-app-intro-slider"
-// import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
-// import { COLORS } from "../../colors/colors";
+import React, { FC, useState } from "react"
+import { Image, Dimensions, TextStyle, View, ViewStyle } from "react-native"
 
 import { observer } from "mobx-react-lite"
-import React, { FC, useState } from "react"
-import { Image, Dimensions, ImageStyle, TextStyle, View, ViewStyle } from "react-native"
+import AppIntroSlider from "react-native-app-intro-slider"
 import { SafeAreaView } from "react-native-safe-area-context"
+
 import { Button, Text } from "../components"
-import { isRTL, translate } from "../i18n"
-import { colors, spacing } from "../theme"
+import { translate } from "../i18n";
+import { colors } from "../theme";
+import { AppStackScreenProps } from "../navigators"
 
-const welcomeLogo = require("../../assets/images/logo.png")
-const welcomeFace = require("../../assets/images/welcome-face.png")
+const welcomeLogo = require("../../assets/images/logo.png");
+const secondImage = require("../../assets/images/secondImage.png")
+const thirdImage = require("../../assets/images/thirdImage.png")
 
-const $titleContainer: TextStyle = {
+const $firstTitleContainer: TextStyle = {
   fontWeight: "bold",
   fontSize: 52,
   lineHeight: 60,
@@ -26,169 +25,108 @@ const $titleContainer: TextStyle = {
 
 const $subtitleContainer: TextStyle = {
   fontSize: 20,
-  lineHeight: 20,
+  lineHeight: 25,
   textAlign: "center",
   textTransform: "capitalize",
   marginVertical: 20,
 }
 
-export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeScreen() {
+const $otherTitleContainer: TextStyle = {
+  fontWeight: '600',
+  fontSize: 26,
+  lineHeight: 30,
+  textAlign: 'center',
+  color: colors.palette.black500
+}
+
+const $textContainer: ViewStyle = {
+  paddingHorizontal: 10
+}
+
+interface WelcomeScreenProps extends AppStackScreenProps<"Welcome"> {}
+
+export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeScreen({navigation}) {
   const screens = [
     {
       id: 1,
       image: welcomeLogo,
-      title: translate("onboarding.brandName"),
+      title: translate("brandName"),
       subTitle: translate("onboarding.pageOneSubTIitle"),
-      titleSet: $titleContainer,
+      titleSet: $firstTitleContainer,
       subTitleSet: $subtitleContainer,
     },
     {
       id: 2,
-      // image: require("../../Photos/two.png"),
-      title: "Share your interests with the whole world.",
-      subTitle:
-        "Matches are based on common interests and languages. Ready to seal your first letter and meet a new love?",
-      titleSet: $titleContainer,
+      image: secondImage,
+      title: translate("onboarding.pageTwoTitle"),
+      subTitle: translate("onboarding.pageTwoSubTitle"),
+      titleSet: $otherTitleContainer,
       subTitleSet: $subtitleContainer,
     },
     {
       id: 3,
-      // image: require("../../Photos/there.png"),
-      title: "Let`s start your journey with us now!",
-      subTitle:
-        "Do not wait until the conditions are perfect to begin. Beginning makes the conditions perfect.",
-      titleSet: $titleContainer,
+      image: thirdImage,
+      title: translate("onboarding.pageThereTitle"),
+      subTitle: translate("onboarding.pageThereSubTitle"),
+      titleSet: $otherTitleContainer,
       subTitleSet: $subtitleContainer,
     },
   ]
-  // const buttonLabel = (label) => {
-  //   return (
-  //     <View
-  //       style={{
-  //         width: "100%",
-  //         alignItems: "center",
-  //         justifyContent: "center",
-  //         height: 45,
-  //         borderRadius: 21,
-  //         // backgroundColor: COLORS.yellow
-  //       }}
-  //     >
-  //       <Text
-  //         style={
-  //           {
-  //             // color: COLORS.black
-  //           }
-  //         }
-  //       >
-  //         {label}
-  //       </Text>
-  //     </View>
-  //   )
-  // }
-  // const skipButton = (label) => {
-  //   return (
-  //     <View
-  //       style={{
-  //         marginVertical: 10,
-  //         width: "100%",
-  //         alignItems: "center",
-  //         justifyContent: "center",
-  //         height: 45,
-  //         borderRadius: 21,
-  //         backgroundColor: "#f5f5f5",
-  //         flexDirection: "row",
-  //         // shadowColor: COLORS.secondary,
-  //         // shadowColor: "#000",
-  //         shadowOffset: {
-  //           width: 0,
-  //           height: 3,
-  //         },
-  //         shadowOpacity: 0.27,
-  //         shadowRadius: 4.65,
-
-  //         elevation: 4,
-  //       }}
-  //     >
-  //       {/* <Icon name="exit-to-app" size={22} color={COLORS.black} /> */}
-  //       <Text
-  //         style={{
-  //           // color: COLORS.black,
-  //           marginLeft: 10,
-  //         }}
-  //       >
-  //         {label}
-  //       </Text>
-  //     </View>
-  //   )
-  // }
 
   const WIDTH = Dimensions.get("window").width
 
   const [showHomePage, setShowHomePage] = useState(false)
 
+  const _nextButton = () => (<Button preset="primary" text={translate("onboarding.nextButton")} />)
+  const _doneButton = () => (<Button onPress={() => navigation.navigate('Register')} preset="primary" text={translate("onboarding.doneButton")} />)
+
   if (!showHomePage) {
     return (
-      <SafeAreaView style={{ backgroundColor: "#fff" }}>
-        <View
-          style={{
-            flexDirection: "column",
-            padding: 10,
+      <SafeAreaView style={$container}>
+        <AppIntroSlider 
+          data={screens}
+          keyExtractor={(item) => item.subTitle}
+          renderItem={({ item }) => {
+            return (
+              <View style={$topContainer}>
+                <Image
+                  key={1}
+                  source={item.image}
+                  style={{ width: WIDTH - 80, height: 400 }}
+                  resizeMode={"contain"}
+                />
+                <View style={$textContainer}>
+                  <Text style={item.titleSet} text={item.title} />
+                  <Text style={item.subTitleSet} text={item.subTitle} />
+                </View>
+              </View>
+            )
           }}
-        >
-          <Button preset="primary" text="Next Page" />
-        </View>
-        <View
-          style={{
-            flexDirection: "column",
-            padding: 10,
-          }}
-        >
-          <Button icon="check" text="Next Page" />
-        </View>
+          bottomButton
+          activeDotStyle={$activeDotStyle}
+          renderNextButton={_nextButton}
+          renderDoneButton={_doneButton}
+        />
       </SafeAreaView>
-      // <AppIntroSlider
-      //   style={
-      //     {
-      //       // backgroundColor: COLORS.white
-      //     }
-      //   }
-      //   data={screens}
-      //   renderItem={({ item }) => {
-      //     return (
-      //       <View style={{ width: "100%", justifyContent: "center", alignItems: "center" }}>
-      //         <Image
-      //           key={1}
-      //           source={item.image}
-      //           style={{ width: WIDTH - 80, height: 400 }}
-      //           resizeMode={"contain"}
-      //         />
-      //         <View>
-      //           <Text style={item.titleSet}>{item.title}</Text>
-
-      //           <Text style={item.subTitleSet}>{item.subTitle}</Text>
-      //         </View>
-      //       </View>
-      //     )
-      //   }}
-      //   bottomButton
-      //   showSkipButton
-      //   activeDotStyle={{
-      //     // backgroundColor: COLORS.yellow,
-      //     width: 30,
-      //   }}
-      //   renderDoneButton={() => <Button text="Next +" />}
-      //   renderNextButton={() => <Button text="Next" />}
-      //   renderSkipButton={() => <Button isActive={true} text="Next -" />}
-      //   // renderDoneButton={() => buttonLabel("Let’s start")}
-      //   // renderSkipButton={() => skipButton("Already have Account?")}
-
-      //   // onDone={() => navigation.navigate('RegistrationScreen')}
-      //   // onSkip={() => navigation.navigate('HomeScreen')}
-      // />
     )
   }
 })
 
+const $activeDotStyle : ViewStyle = {
+    backgroundColor: colors.palette.primary500,
+    width: 30
+}
+
+const $container: ViewStyle = {
+  flex: 1,
+  backgroundColor: colors.background,
+}
+
+const $topContainer: ViewStyle = {
+  width: "100%",
+  justifyContent: "center",
+  alignItems: "center"
+}
 // import { observer } from "mobx-react-lite"
 // import React, {
 //   FC,
@@ -229,13 +167,6 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeSc
 //     </View>
 //   )
 // })
-
-// const $container: ViewStyle = {
-//   flex: 1,
-//   backgroundColor: colors.background,
-// }
-
-// const $topContainer: ViewStyle = {
 //   flexShrink: 1,
 //   flexGrow: 1,
 //   flexBasis: "57%",

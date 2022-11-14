@@ -1,13 +1,46 @@
 const en = {
+  brandName: "SINQLY",
   onboarding: {
-    brandName: "SINQLY",
     pageOneSubTIitle: "find your soul mate",
+    pageTwoTitle: "Share your interests with the whole world.",
+    pageTwoSubTitle: "Matches are based on common interests and languages. Ready to seal your first letter and meet a new love?",
+    pageThereTitle: "Let`s start your journey with us now!",
+    pageThereSubTitle: "Do not wait until the conditions are perfect to begin. Beginning makes the conditions perfect.",
+    nextButton: "Next Page",
+    doneButton: "Let’s start"
   },
-
+  loginWith: {
+    // subtitle: "By clicking Log In, you agree with our <a>Terms</a>. Learn how we process your data in our Privacy Policy and Cookies Policy."
+    google: "LOG IN WITH GOOGLE",
+    facebook: "LOG IN WITH FACEBBOK",
+    email: "LOG IN WITH EMAIL",
+    number: "LOG IN WITH NUMBER",
+    or: 'OR'
+  },
+  registerScreen: {
+    logIn: "Login to Your Account",
+    enterYourEmail: "Enter your email address",
+    enterYourName: "Enter your full name",
+    enterYourPhoneNum: "Enter your phone no",
+    enterYourPassword: "Enter your password",
+    register: "Register",
+    textWithLine: "OR CONTINE WITH"
+  },
+  addYourBestPhotos: {
+    title: "Add Your Best Photos",
+    subTitle: "Add your best photos to get a higher amount of daily matches"
+  },
+  selectYourIdeal: {
+    title: "Select Your Ideal Match",
+    subTitle: "What are you hoping to fing on the"
+  },
   common: {
+    nextPage: "Next Page", 
     ok: "OK!",
     cancel: "Cancel",
     back: "Back",
+    search: "Search",
+    contine: "Contine",
     logOut: "Log Out", // @demo remove-current-line
   },
   welcomeScreen: {
@@ -17,6 +50,42 @@ const en = {
     exciting: "(ohh, this is exciting!)",
     letsGo: "Let's go!", // @demo remove-current-line
   },
+  interestsScreen: {
+    title: "Pick some topics you are interested in.",
+    subtitle: "We’ll use them to match with other based on common interests.",
+    cars: "Cars",
+    fashion: "Fashion",
+    movies: "Movies",
+    covid19: "Covid-19",
+    nature: "Nature",
+    adventure: "Adventure",
+    fitness: "Fitness",
+    dancing: "Dancing",
+    beauty: "Beauty",
+    handicraft: "Handicraft",
+    astrology: "Astrology",
+    collecting: "Collecting",
+    singing: "Singing",
+    shopping: "Shopping",
+    technology: "Technology",
+    design: "Design",
+    life: "Life",
+    casual: "Casual",
+    humor: "Humor",
+    sciense: "Sciense",
+    family: "Family",
+  },
+
+  fillYourProfile: {
+    title: "Fill Your profile",
+    fullName: "Full name",
+    nickName: "Nickname",
+    dateOfBirth: "Date Of Birth",
+    email: "Email",
+    gender: 'Gender',
+    occuption: 'Occuption'
+  },
+
   errorScreen: {
     title: "Something went wrong!",
     friendlySubtitle:
@@ -37,6 +106,8 @@ const en = {
   },
   loginScreen: {
     signIn: "Sign In",
+    forgotPass: "Forgot the password?",
+    orContWith: "or contine with",
     enterDetails:
       "Enter your details below to unlock top secret info. You'll never guess what we've got waiting. Or maybe you will; it's not rocket science here.",
     emailFieldLabel: "Email",

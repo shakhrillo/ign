@@ -1,5 +1,6 @@
 import React, { ComponentType, useState } from "react"
 import {
+  ImageStyle,
   Pressable,
   PressableProps,
   PressableStateCallbackType,
@@ -111,11 +112,13 @@ export function Button(props: ButtonProps) {
     <Pressable style={$viewStyle} accessibilityRole="button" {...rest}>
       {(state) => (
         <>
-          {icon ? <Icon icon={icon} /> : null}
+          {icon ? <Icon style={$iconStyle} icon={icon} /> : null}
           {!!LeftAccessory && <LeftAccessory style={$leftAccessoryStyle} pressableState={state} />}
-          <Text tx={tx} text={text} txOptions={txOptions} style={$textStyle(state)}>
-            {children}
-          </Text>
+          {(tx || text) && 
+            <Text tx={tx} text={text} txOptions={txOptions} style={$textStyle(state)}>
+              {children}
+            </Text>
+          }
           {!!RightAccessory && (
             <RightAccessory style={$rightAccessoryStyle} pressableState={state} />
           )}
@@ -125,15 +128,18 @@ export function Button(props: ButtonProps) {
   )
 }
 
+const $iconStyle: ImageStyle = {
+  marginHorizontal: 16
+}
+
 const $baseViewStyle: ViewStyle = {
-  minHeight: 56,
+  minHeight: 46,
   borderRadius: 4,
   justifyContent: "center",
   alignItems: "center",
   flexDirection: "row",
   paddingVertical: spacing.small,
   paddingHorizontal: spacing.small,
-  overflow: "hidden",
 }
 
 const $baseTextStyle: TextStyle = {
@@ -166,6 +172,23 @@ const $viewPresets = {
     },
   ] as StyleProp<ViewStyle>,
 
+  withIcon: [
+    $baseViewStyle,
+    {
+      minHeight: 60,
+      borderRadius: 15,
+      shadowColor: "#000",
+      shadowOffset: {
+        width: 0,
+        height: 1,
+      },
+      shadowOpacity: 0.22,
+      shadowRadius: 2.22,
+      elevation: 3,
+      backgroundColor: colors.palette.neutral100,
+    }
+  ] as StyleProp<ViewStyle>,
+
   primary: [
     $baseViewStyle,
     {
@@ -186,14 +209,17 @@ const $viewPresets = {
 const $textPresets: Record<Presets, StyleProp<TextStyle>> = {
   default: $baseTextStyle,
   primary: $baseTextStyle,
+  withIcon: $baseViewStyle
 }
 
 const $pressedViewPresets: Record<Presets, StyleProp<ViewStyle>> = {
   default: { backgroundColor: colors.palette.neutral200 },
   primary: { backgroundColor: colors.palette.primary600 },
+  withIcon: { backgroundColor: colors.palette.neutral100 },
 }
 
 const $pressedTextPresets: Record<Presets, StyleProp<TextStyle>> = {
   default: { opacity: 0.9 },
   primary: { opacity: 0.8 },
+  withIcon: { opacity: 0.8 },
 }
